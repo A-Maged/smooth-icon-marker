@@ -1,13 +1,17 @@
+# smooth-icon-marker
+
+Animate Google Maps marker movement from it's position to a destination.
+
 # Install
 
 ```bash
-  npm install smooth-icon-marker
+npm install smooth-icon-marker
 ```
 
-or using yarn
+##### or using yarn
 
 ```bash
-  yarn add smooth-icon-marker
+yarn add smooth-icon-marker
 ```
 
 # Add google maps SDK and Geometry library before your script
@@ -18,14 +22,6 @@ or using yarn
 <script src="your-app.js"></script>
 ```
 
-# Demo
-
-```bash
-git clone git@github.com:A-Maged/smooth-icon-marker.git
-cd smooth-icon-marker/src/demo
-yarn && yarn start
-```
-
 # Usage
 
 ### Import
@@ -34,49 +30,49 @@ yarn && yarn start
 import SmoothMarker from "smooth-icon-marker";
 ```
 
-### `animatedSetPosition()`
+### `animatedSetPosition(destination: google.maps.LatLng)`
 
 Use this instead of the default `SetPosition` method to get the animation effect.
 
 ```js
-import SmoothMarker from "smooth-icon-marker";
+const startPosition = new google.maps.LatLng(
+  35.9588769088931,
+  -115.12207388877869
+);
+const endPosition = new google.maps.LatLng(
+  35.95950326404771,
+  -115.12020304799081
+);
 
 let marker = new SmoothMarker({
   map,
   position: startPosition,
 });
 
-marker.animatedSetPosition(newPosition);
+marker.animatedSetPosition(endPosition);
 ```
 
 # Options
 
 This library extends google maps marker. It inherits all of it's options and methods and it adds to them:
 
-### `durationMs`
+- `durationMs` (number) - Animation duration in milliseconds - Default is `100ms`.
 
-Animation duration in milliseconds.
-
-Default is `100ms`.
+- `hasTrailLine` (bool) - Show a Polyline behind the Marker - Default is `true`.
 
 ```js
 let marker = new SmoothMarker({
+  durationMs: 80, // Tweak for your own use case
+  hasTrailLine: false,
   map,
   position: startPosition,
-  durationMs: 100, // Tweak for your own use case
 });
 ```
 
-### `hasTrailLine`
+# Demo
 
-Show a Polyline behind the Marker.
-
-Default is `true`.
-
-```js
-let marker = new SmoothMarker({
-  map,
-  position: startPosition,
-  hasTrailLine: false,
-});
+```bash
+git clone git@github.com:A-Maged/smooth-icon-marker.git
+cd smooth-icon-marker/src/demo
+yarn && yarn start
 ```
