@@ -1,6 +1,6 @@
 {
   "name": "smooth-icon-marker",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "types": "lib",
   "main": "lib/index.js",
   "homepage": "https://github.com/A-Maged/smooth-icon-marker#readme",
@@ -13,8 +13,7 @@
     "watch": "yarn clean && tsc --watch",
     "build": "yarn clean && tsc",
     "clean": "rm -rf lib/*",
-    "prepublish": "yarn build",
-    "publish": "npm publish"
+    "prepublish": "yarn build"
   },
   "files": [
     "lib"
