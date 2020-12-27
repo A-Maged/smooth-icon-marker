@@ -1,6 +1,6 @@
 {
   "name": "smooth-icon-marker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "types": "lib",
   "main": "lib/index.js",
   "license": "MIT",
