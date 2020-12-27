@@ -3,47 +3,66 @@ import { icon, gInterpolate, gComputeDistanceBetween, gmaps } from "./utils";
 import { MarkerOptions, LatLng } from "./types";
 
 export default class Marker extends gmaps.Marker implements MarkerOptions {
-  animationStepsQueue: Denque;
+  currentDestination: LatLng | null;
   duration: number;
   hasTrailLine?: boolean;
-  isProcessingQueue: boolean;
   trailLine: google.maps.Polyline | null;
+
+  private bigSteps: Denque;
+  private increamentFraction: number;
+  private loopIndex: number;
 
   constructor({ duration, hasTrailLine = true, ...options }: MarkerOptions) {
     options.icon = icon;
-
     super(options);
 
+    this.currentDestination = null;
     this.duration = duration;
-    this.isProcessingQueue = false;
-    this.animationStepsQueue = new Denque();
     this.hasTrailLine = hasTrailLine;
-    this.trailLine = hasTrailLine
-      ? new gmaps.Polyline({
-          // strokeOpacity: 0, // hide line
-          path: [],
-          map: this.getMap() as google.maps.Map,
-        })
-      : null;
+    this.trailLine = this.initTrailLine();
+
+    this.bigSteps = new Denque();
+    this.increamentFraction = 0;
+    this.loopIndex = duration * 60;
   }
 
-  animatedSetPosition(newPosition: LatLng) {
-    this.changeDirection(newPosition);
+  animatedSetPosition(nextStep: LatLng) {
+    this.bigSteps.push(nextStep);
 
-    /* queue while busy */
-    if (this.isProcessingQueue) {
-      this.animationStepsQueue.push(newPosition);
+    this.animate();
+  }
+
+  animate() {
+    if (!this.currentDestination) {
+      this.currentDestination = this.bigSteps.shift();
     }
 
-    /* reset and fill queue */
-    this.isProcessingQueue = true;
-    this.animationStepsQueue = this.getStepsBetween(
-      this.getPosition(),
-      newPosition
-    );
+    let start = this.getPosition() as LatLng;
+    let end = this.currentDestination as LatLng;
+    // let distance = gComputeDistanceBetween(start, end);
+    this.loopIndex -= 1;
 
-    /* process queue */
-    this.processAnimationQueue();
+    if (this.loopIndex <= 0) {
+      /* resel */
+      this.currentDestination = this.bigSteps.shift();
+      this.increamentFraction = 0;
+      this.loopIndex = this.duration;
+    } else {
+      /* move a small step */
+      this.increamentFraction += 100 / (this.duration * 6000);
+      const smallStep = gInterpolate(start, end, this.increamentFraction);
+
+      this.move(smallStep);
+
+      requestAnimationFrame(this.animate.bind(this));
+    }
+  }
+
+  move(position: LatLng) {
+    if (this.currentDestination) this.changeDirection(this.currentDestination);
+
+    this.setPosition(position);
+    this.drawPath(position);
   }
 
   changeDirection(newPosition: LatLng) {
@@ -61,24 +80,6 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     this.setIcon(icon);
   }
 
-  private processAnimationQueue() {
-    const step = this.animationStepsQueue.shift();
-
-    /* move one step*/
-    if (step) {
-      this.setPosition(step);
-      this.drawPath(step);
-    }
-
-    /* repeat until queue is empty */
-    if (this.animationStepsQueue.length > 0) {
-      requestAnimationFrame(this.processAnimationQueue.bind(this));
-    } else {
-      /* reset */
-      this.isProcessingQueue = false;
-    }
-  }
-
   private drawPath(newPosition: LatLng) {
     if (!this.hasTrailLine || !this.trailLine) return;
 
@@ -89,19 +90,13 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     this.trailLine.setPath(newPath);
   }
 
-  private getStepsBetween(start: LatLng | null | undefined, end: LatLng) {
-    if (!start || !end) return new Denque();
-
-    let steps = new Denque();
-    let increamentByFraction = 0;
-    // let distanceDiff = gComputeDistanceBetween(start, end);
-
-    for (let i = 0; i < this.duration * 60; i++) {
-      increamentByFraction += 100 / (this.duration * 6000);
-      const step = gInterpolate(start, end, increamentByFraction);
-      steps.push(step);
-    }
-
-    return steps;
+  private initTrailLine() {
+    return this.hasTrailLine
+      ? new gmaps.Polyline({
+          // strokeOpacity: 0, // hide line
+          path: [],
+          map: this.getMap() as google.maps.Map,
+        })
+      : null;
   }
 }
