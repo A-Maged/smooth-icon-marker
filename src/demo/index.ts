@@ -17,6 +17,7 @@ const map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
 let marker = new SmoothMarker({
   map,
   position: startPosition,
+  durationMs: 80,
 });
 
 (async function simulateMovingDevice(marker: SmoothMarker) {
