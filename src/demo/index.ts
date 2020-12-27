@@ -17,7 +17,7 @@ const map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
 let marker = new SmoothMarker({
   map,
   position: startPosition,
-  duration: 20, // In millisecond. Tweak for your own use case
+  durationMs: 100, // In millisecond. Tweak for your own use case
 });
 
 (async function simulateMovingDevice(marker: SmoothMarker) {
@@ -27,6 +27,6 @@ let marker = new SmoothMarker({
     marker.animatedSetPosition(newPosition);
 
     /* simulate device send interval and network latency */
-    await sleep(300);
+    await sleep(100);
   }
 })(marker);

@@ -4,26 +4,26 @@ import { MarkerOptions, LatLng } from "./types";
 
 export default class Marker extends gmaps.Marker implements MarkerOptions {
   currentDestination: LatLng | null;
-  duration: number;
+  durationMs: number;
   hasTrailLine?: boolean;
   trailLine: google.maps.Polyline | null;
 
   private bigSteps: Denque;
-  private increamentFraction: number;
+  private increamentByFraction: number;
   private loopIndex: number;
 
-  constructor({ duration, hasTrailLine = true, ...options }: MarkerOptions) {
+  constructor({ durationMs, hasTrailLine = true, ...options }: MarkerOptions) {
     options.icon = icon;
     super(options);
 
     this.currentDestination = null;
-    this.duration = duration;
+    this.durationMs = durationMs;
     this.hasTrailLine = hasTrailLine;
     this.trailLine = this.initTrailLine();
 
     this.bigSteps = new Denque();
-    this.increamentFraction = 0;
-    this.loopIndex = duration * 60;
+    this.increamentByFraction = 0;
+    this.loopIndex = this.loopIndexInitState();
   }
 
   animatedSetPosition(nextStep: LatLng) {
@@ -33,10 +33,7 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
   }
 
   animate() {
-    if (!this.currentDestination) {
-      this.currentDestination = this.bigSteps.shift();
-    }
-
+    this.currentDestination = this.currentDestination ?? this.bigSteps.shift();
     let start = this.getPosition() as LatLng;
     let end = this.currentDestination as LatLng;
     // let distance = gComputeDistanceBetween(start, end);
@@ -45,12 +42,12 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     if (this.loopIndex <= 0) {
       /* resel */
       this.currentDestination = this.bigSteps.shift();
-      this.increamentFraction = 0;
-      this.loopIndex = this.duration;
+      this.increamentByFraction = 0;
+      this.loopIndex = this.loopIndexInitState();
     } else {
       /* move a small step */
-      this.increamentFraction += 100 / (this.duration * 6000);
-      const smallStep = gInterpolate(start, end, this.increamentFraction);
+      this.increamentByFraction += 100 / (this.durationMs * 6000);
+      const smallStep = gInterpolate(start, end, this.increamentByFraction);
 
       this.move(smallStep);
 
@@ -98,5 +95,9 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
           map: this.getMap() as google.maps.Map,
         })
       : null;
+  }
+
+  private loopIndexInitState() {
+    return this.durationMs;
   }
 }
