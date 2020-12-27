@@ -4,7 +4,7 @@ import { MarkerOptions, LatLng } from "./types";
 
 export default class Marker extends gmaps.Marker implements MarkerOptions {
   currentDestination: LatLng | null;
-  durationMs?: number;
+  durationMs: number;
   hasTrailLine?: boolean;
   trailLine: google.maps.Polyline | null;
 
