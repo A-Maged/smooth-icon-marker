@@ -1,12 +1,13 @@
 {
   "name": "smooth-icon-marker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "types": "lib",
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
     "watch": "yarn clean && tsc --watch",
     "build": "yarn clean && tsc",
+    "publish": "yarn build && npm publish",
     "clean": "rm -rf lib/*"
   },
   "files": [
