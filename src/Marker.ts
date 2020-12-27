@@ -12,7 +12,11 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
   private increamentByFraction: number;
   private loopIndex: number;
 
-  constructor({ durationMs, hasTrailLine = true, ...options }: MarkerOptions) {
+  constructor({
+    durationMs = 100,
+    hasTrailLine = true,
+    ...options
+  }: MarkerOptions) {
     options.icon = icon;
     super(options);
 
