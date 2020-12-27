@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel index.html",
-    "predeploy": "parcel build index.html --public-url https://a-maged.github.io/smooth-icon-marker/",
+    "predeploy": "parcel build index.html --public-url https://a-maged.github.io/smooth-icon-marker",
     "deploy": "gh-pages -d dist"
   },
   "browserslist": [
