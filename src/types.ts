@@ -1,5 +1,5 @@
 export interface MarkerOptions extends google.maps.ReadonlyMarkerOptions {
-  durationMs: number;
+  durationMs?: number;
   hasTrailLine?: boolean;
 }
 

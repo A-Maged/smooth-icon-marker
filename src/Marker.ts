@@ -4,7 +4,7 @@ import { MarkerOptions, LatLng } from "./types";
 
 export default class Marker extends gmaps.Marker implements MarkerOptions {
   currentDestination: LatLng | null;
-  durationMs: number;
+  durationMs?: number;
   hasTrailLine?: boolean;
   trailLine: google.maps.Polyline | null;
 
@@ -27,7 +27,7 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
 
     this.bigSteps = new Denque();
     this.increamentByFraction = 0;
-    this.loopIndex = this.loopIndexInitState();
+    this.loopIndex = this.loopIndexInitState() as number;
   }
 
   animatedSetPosition(nextStep: LatLng) {
