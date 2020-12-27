@@ -2,6 +2,20 @@
 
 Animate Google Maps marker movement from it's position to a destination.
 
+# Demo
+
+Click on the image to see a live demo.
+
+<a href="https://a-maged.github.io/smooth-icon-marker/" target="_blank">
+    <img src="https://github.com/A-Maged/smooth-icon-marker/blob/main/src/demo/Screenshot.png?raw=true" width="600" alt="demo screenshot">
+</a>
+
+```bash
+git clone git@github.com:A-Maged/smooth-icon-marker.git
+cd smooth-icon-marker/src/demo
+yarn && yarn start
+```
+
 # Install
 
 ```bash
@@ -67,18 +81,4 @@ let marker = new SmoothMarker({
   map,
   position: startPosition,
 });
-```
-
-# Demo
-
-Click on the image to see a live demo.
-
-<a href="https://a-maged.github.io/smooth-icon-marker/" target="_blank">
-    <img src="https://github.com/A-Maged/smooth-icon-marker/blob/main/src/demo/Screenshot.png?raw=true" width="600" alt="demo screenshot">
-</a>
-
-```bash
-git clone git@github.com:A-Maged/smooth-icon-marker.git
-cd smooth-icon-marker/src/demo
-yarn && yarn start
 ```
