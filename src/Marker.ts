@@ -44,7 +44,7 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     this.loopIndex -= 1;
 
     if (this.loopIndex <= 0) {
-      /* resel */
+      /* reset */
       this.currentDestination = this.bigSteps.shift();
       this.increamentByFraction = 0;
       this.loopIndex = this.loopIndexInitState();
