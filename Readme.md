@@ -4,11 +4,13 @@ Animate Google Maps marker movement from it's position to a destination.
 
 # Demo
 
-Click on the image to see a live demo.
+##### Click on the image to see a live demo.
 
 <a href="https://a-maged.github.io/smooth-icon-marker/" target="_blank">
     <img src="https://github.com/A-Maged/smooth-icon-marker/blob/main/src/demo/Screenshot.png?raw=true" width="600" alt="demo screenshot">
 </a>
+
+##### Run demo locally
 
 ```bash
 git clone git@github.com:A-Maged/smooth-icon-marker.git
@@ -22,13 +24,12 @@ yarn && yarn start
 npm install smooth-icon-marker
 ```
 
-##### or using yarn
-
 ```bash
+# or using yarn
 yarn add smooth-icon-marker
 ```
 
-# Add google maps SDK and Geometry library before your script
+#### Add google maps SDK and Geometry library before your script
 
 ```html
 <script src="https://maps.googleapis.com/maps/api/js?&libraries=geometry"></script>
@@ -38,13 +39,13 @@ yarn add smooth-icon-marker
 
 # Usage
 
-### Import
+#### Import
 
 ```js
 import SmoothMarker from "smooth-icon-marker";
 ```
 
-### `animatedSetPosition(destination: google.maps.LatLng)`
+#### `animatedSetPosition(destination: google.maps.LatLng)`
 
 Use this instead of the default `SetPosition` method to get the animation effect.
 
