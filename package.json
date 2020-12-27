@@ -1,9 +1,14 @@
 {
   "name": "smooth-icon-marker",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "types": "lib",
   "main": "lib/index.js",
+  "homepage": "https://github.com/A-Maged/smooth-icon-marker#readme",
+  "author": "a-maged",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "scripts": {
     "watch": "yarn clean && tsc --watch",
     "build": "yarn clean && tsc",
@@ -18,7 +23,6 @@
     "type": "git",
     "url": "git+https://github.com/A-Maged/smooth-icon-marker"
   },
-  "author": "a-maged",
   "keywords": [
     "marker",
     "icon marker",
@@ -28,7 +32,6 @@
   "bugs": {
     "url": "https://github.com/A-Maged/smooth-icon-marker/issues"
   },
-  "homepage": "https://github.com/A-Maged/smooth-icon-marker#readme",
   "dependencies": {
     "denque": "^1.4.1"
   },
