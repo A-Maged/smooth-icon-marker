@@ -1,4 +1,4 @@
-import SmoothMarker from "../Marker";
+import SmoothMarker from "smooth-icon-marker";
 import { sleep } from "../utils";
 import fakeMapPoints from "./fakeData.json";
 

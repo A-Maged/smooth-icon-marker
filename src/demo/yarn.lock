@@ -1671,6 +1671,11 @@
     chrome-trace-event "^1.0.2"
     nullthrows "^1.1.1"
 
+"@types/googlemaps@^3.43.0":
+  version "3.43.0"
+  resolved "https://registry.yarnpkg.com/@types/googlemaps/-/googlemaps-3.43.0.tgz#e13e2aac873f1b7eab25648acf0c26f847ece4dd"
+  integrity sha512-4k6N1LKTmwHEG6zKNMfINqQS08jd3wYdmlBRfJpcKqUYC9A9uXzuO3irV6muI+PWg1DRAjlBuLfrQTmHNjzlGA==
+
 "@types/q@^1.5.1":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
@@ -2672,6 +2677,11 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha1-3zrhmayt+31ECqrgsp4icrJOxhk=
+
+denque@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/denque/-/denque-1.4.1.tgz#6744ff7641c148c3f8a69c307e51235c1f4a37cf"
+  integrity sha512-OfzPuSZKGcgr96rf1oODnfjqBFmr1DVoc/TrItj3Ohe0Ah1C5WX5Baquw/9U9KovnQ88EqmJbD66rKYUQYN1tQ==
 
 des.js@^1.0.0:
   version "1.0.1"
@@ -5391,6 +5401,13 @@ slice-ansi@^4.0.0:
     ansi-styles "^4.0.0"
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
+
+smooth-icon-marker@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/smooth-icon-marker/-/smooth-icon-marker-1.0.10.tgz#fba9f78008efeb8ceab856d3ba83569ec73560a8"
+  integrity sha512-Vix9pXUabJxNImbcV5QzhV9jRgXxP9cYIbs0BpNLq1EiQag1JH1quH1LV41L2jgpvC1WEcaqJEZkMN0RiWAZPg==
+  dependencies:
+    denque "^1.4.1"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
