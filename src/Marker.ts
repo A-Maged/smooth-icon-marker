@@ -1,13 +1,12 @@
 import Denque from "denque";
-import { gInterpolate, gComputeDistanceBetween, gmaps } from "./utils";
+import { gInterpolate, gMaps } from "./utils";
 import { MarkerOptions, LatLng } from "./types";
 
-export default class Marker extends gmaps.Marker implements MarkerOptions {
+export default class Marker extends gMaps.Marker implements MarkerOptions {
   currentDestination: LatLng | null;
   durationMs: number;
   hasTrailLine?: boolean;
   trailLine: google.maps.Polyline | null;
-
   private bigSteps: Denque;
   private increamentByFraction: number;
   private loopIndex: number;
@@ -23,7 +22,7 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     this.durationMs = durationMs;
     this.hasTrailLine = hasTrailLine;
     this.trailLine = this.initTrailLine();
-
+    /* private */
     this.bigSteps = new Denque();
     this.increamentByFraction = 0;
     this.loopIndex = this.loopIndexInitState() as number;
@@ -31,7 +30,6 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
 
   animatedSetPosition(nextStep: LatLng) {
     this.bigSteps.push(nextStep);
-
     this.animate();
   }
 
@@ -39,11 +37,10 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     this.currentDestination = this.currentDestination ?? this.bigSteps.shift();
     let start = this.getPosition() as LatLng;
     let end = this.currentDestination as LatLng;
-    // let distance = gComputeDistanceBetween(start, end);
     this.loopIndex -= 1;
 
     if (this.loopIndex <= 0) {
-      /* reset */
+      /* animation has ended, reset */
       this.currentDestination = this.bigSteps.shift();
       this.increamentByFraction = 0;
       this.loopIndex = this.loopIndexInitState();
@@ -53,28 +50,24 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
       const smallStep = gInterpolate(start, end, this.increamentByFraction);
 
       this.move(smallStep);
-
       requestAnimationFrame(this.animate.bind(this));
     }
   }
 
   move(position: LatLng) {
     if (this.currentDestination) this.changeDirection(this.currentDestination);
-
     this.setPosition(position);
     this.drawPath(position);
   }
 
   changeDirection(newPosition: LatLng) {
     let currentPosition = this.getPosition();
-
     if (!currentPosition) return;
 
     let icon = this.getIcon() as google.maps.Symbol;
-
     if (typeof icon !== "object") return;
 
-    icon.rotation = gmaps.geometry.spherical.computeHeading(
+    icon.rotation = gMaps.geometry.spherical.computeHeading(
       currentPosition,
       newPosition
     );
@@ -88,13 +81,12 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     let newPath = this.trailLine.getPath();
 
     newPath.push(newPosition);
-
     this.trailLine.setPath(newPath);
   }
 
   private initTrailLine() {
     return this.hasTrailLine
-      ? new gmaps.Polyline({
+      ? new gMaps.Polyline({
           // strokeOpacity: 0, // hide line
           path: [],
           map: this.getMap() as google.maps.Map,
