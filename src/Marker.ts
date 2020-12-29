@@ -1,5 +1,5 @@
 import Denque from "denque";
-import { icon, gInterpolate, gComputeDistanceBetween, gmaps } from "./utils";
+import { gInterpolate, gComputeDistanceBetween, gmaps } from "./utils";
 import { MarkerOptions, LatLng } from "./types";
 
 export default class Marker extends gmaps.Marker implements MarkerOptions {
@@ -17,7 +17,6 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     hasTrailLine = true,
     ...options
   }: MarkerOptions) {
-    options.icon = icon;
     super(options);
 
     this.currentDestination = null;
@@ -72,6 +71,8 @@ export default class Marker extends gmaps.Marker implements MarkerOptions {
     if (!currentPosition) return;
 
     let icon = this.getIcon() as google.maps.Symbol;
+
+    if (typeof icon !== "object") return;
 
     icon.rotation = gmaps.geometry.spherical.computeHeading(
       currentPosition,
