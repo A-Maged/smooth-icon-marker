@@ -2,20 +2,26 @@ import Denque from "denque";
 import { gInterpolate, gMaps } from "./utils";
 import { MarkerOptions, LatLng } from "./types";
 
-export default class Marker extends gMaps.Marker implements MarkerOptions {
+const DEFAULT_DURATION_MS = 100;
+const ANIMATION_LOOP_CHANGE_BY = 1;
+const ANIMATION_LOOP_RESET_AT = 0;
+
+export default class Marker extends gMaps.Marker {
   currentDestination: LatLng | null;
   durationMs: number;
   hasTrailLine?: boolean;
   trailLine: google.maps.Polyline | null;
   private bigSteps: Denque;
-  private increamentByFraction: number;
-  private loopIndex: number;
+  private offsetPositionBy: number;
+  private animationCounter: number;
 
-  constructor({
-    durationMs = 100,
-    hasTrailLine = true,
-    ...options
-  }: MarkerOptions) {
+  constructor(args: MarkerOptions) {
+    let {
+      durationMs = DEFAULT_DURATION_MS,
+      hasTrailLine = true,
+      ...options
+    } = args;
+
     super(options);
 
     this.currentDestination = null;
@@ -24,8 +30,8 @@ export default class Marker extends gMaps.Marker implements MarkerOptions {
     this.trailLine = this.initTrailLine();
     /* private */
     this.bigSteps = new Denque();
-    this.increamentByFraction = 0;
-    this.loopIndex = this.loopIndexInitState() as number;
+    this.offsetPositionBy = 0;
+    this.animationCounter = this.animationCounterInitState() as number;
   }
 
   animatedSetPosition(nextStep: LatLng) {
@@ -34,30 +40,38 @@ export default class Marker extends gMaps.Marker implements MarkerOptions {
   }
 
   animate() {
-    this.currentDestination = this.currentDestination ?? this.bigSteps.shift();
-    let start = this.getPosition() as LatLng;
-    let end = this.currentDestination as LatLng;
-    this.loopIndex -= 1;
+    this.animationCounter -= ANIMATION_LOOP_CHANGE_BY;
 
-    if (this.loopIndex <= 0) {
-      /* animation has ended, reset */
-      this.currentDestination = this.bigSteps.shift();
-      this.increamentByFraction = 0;
-      this.loopIndex = this.loopIndexInitState();
+    if (this.animationCounter <= ANIMATION_LOOP_RESET_AT) {
+      this.resetAnimation();
     } else {
-      /* move a small step */
-      this.increamentByFraction += 100 / (this.durationMs * 6000);
-      const smallStep = gInterpolate(start, end, this.increamentByFraction);
+      this.move(); /* move a small step towards current destination */
 
-      this.move(smallStep);
       requestAnimationFrame(this.animate.bind(this));
     }
   }
 
-  move(position: LatLng) {
+  private resetAnimation() {
+    this.currentDestination = this.bigSteps.shift();
+    this.offsetPositionBy = 0;
+    this.animationCounter = this.animationCounterInitState();
+  }
+
+  move() {
+    this.currentDestination = this.currentDestination ?? this.bigSteps.shift();
+    const startPosition = this.getPosition() as LatLng;
+    const endPosition = this.currentDestination as LatLng;
+    this.offsetPositionBy += 100 / (this.durationMs * 6000);
+
+    const smallStep = gInterpolate(
+      startPosition,
+      endPosition,
+      this.offsetPositionBy
+    );
+
     if (this.currentDestination) this.changeDirection(this.currentDestination);
-    this.setPosition(position);
-    this.drawPath(position);
+    this.setPosition(smallStep);
+    this.drawPath(smallStep);
   }
 
   changeDirection(newPosition: LatLng) {
@@ -94,7 +108,7 @@ export default class Marker extends gMaps.Marker implements MarkerOptions {
       : null;
   }
 
-  private loopIndexInitState() {
+  private animationCounterInitState() {
     return this.durationMs;
   }
 }
