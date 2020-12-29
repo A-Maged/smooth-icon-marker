@@ -9,8 +9,8 @@ const ANIMATION_LOOP_RESET_AT = 0;
 export default class Marker extends gMaps.Marker {
   currentDestination: LatLng | null;
   durationMs: number;
-  hasTrailLine?: boolean;
-  trailLine: google.maps.Polyline | null;
+  cbBeforeMove?: Function;
+  cbAfterMove?: Function;
   private bigSteps: Denque;
   private offsetPositionBy: number;
   private animationCounter: number;
@@ -18,7 +18,8 @@ export default class Marker extends gMaps.Marker {
   constructor(args: MarkerOptions) {
     let {
       durationMs = DEFAULT_DURATION_MS,
-      hasTrailLine = true,
+      cbBeforeMove,
+      cbAfterMove,
       ...options
     } = args;
 
@@ -26,12 +27,12 @@ export default class Marker extends gMaps.Marker {
 
     this.currentDestination = null;
     this.durationMs = durationMs;
-    this.hasTrailLine = hasTrailLine;
-    this.trailLine = this.initTrailLine();
+    this.cbBeforeMove = cbBeforeMove;
+    this.cbAfterMove = cbAfterMove;
     /* private */
     this.bigSteps = new Denque();
     this.offsetPositionBy = 0;
-    this.animationCounter = this.animationCounterInitState() as number;
+    this.animationCounter = this.animationCounterInitState();
   }
 
   animatedSetPosition(nextStep: LatLng) {
@@ -39,13 +40,19 @@ export default class Marker extends gMaps.Marker {
     this.animate();
   }
 
-  animate() {
+  private animate() {
     this.animationCounter -= ANIMATION_LOOP_CHANGE_BY;
 
     if (this.animationCounter <= ANIMATION_LOOP_RESET_AT) {
       this.resetAnimation();
     } else {
-      this.move(); /* move a small step towards current destination */
+      if (typeof this.cbBeforeMove === "function")
+        this.cbBeforeMove(this.getPosition());
+
+      const nextPosition = this.move(); /* move a small step towards current destination */
+
+      if (typeof this.cbAfterMove === "function")
+        this.cbAfterMove(nextPosition);
 
       requestAnimationFrame(this.animate.bind(this));
     }
@@ -57,7 +64,7 @@ export default class Marker extends gMaps.Marker {
     this.animationCounter = this.animationCounterInitState();
   }
 
-  move() {
+  private move(): LatLng {
     this.currentDestination = this.currentDestination ?? this.bigSteps.shift();
     const startPosition = this.getPosition() as LatLng;
     const endPosition = this.currentDestination as LatLng;
@@ -71,7 +78,8 @@ export default class Marker extends gMaps.Marker {
 
     if (this.currentDestination) this.changeDirection(this.currentDestination);
     this.setPosition(smallStep);
-    this.drawPath(smallStep);
+
+    return smallStep;
   }
 
   changeDirection(newPosition: LatLng) {
@@ -87,25 +95,6 @@ export default class Marker extends gMaps.Marker {
     );
 
     this.setIcon(icon);
-  }
-
-  private drawPath(newPosition: LatLng) {
-    if (!this.hasTrailLine || !this.trailLine) return;
-
-    let newPath = this.trailLine.getPath();
-
-    newPath.push(newPosition);
-    this.trailLine.setPath(newPath);
-  }
-
-  private initTrailLine() {
-    return this.hasTrailLine
-      ? new gMaps.Polyline({
-          // strokeOpacity: 0, // hide line
-          path: [],
-          map: this.getMap() as google.maps.Map,
-        })
-      : null;
   }
 
   private animationCounterInitState() {
