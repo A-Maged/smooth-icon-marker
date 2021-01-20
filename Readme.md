@@ -42,7 +42,7 @@ yarn add smooth-icon-marker
 #### Import
 
 ```js
-import SmoothMarker from "smooth-icon-marker";
+import SmoothMarker from 'smooth-icon-marker';
 ```
 
 #### `animatedSetPosition(destination: google.maps.LatLng)`
@@ -73,13 +73,30 @@ This library extends google maps marker. It inherits all of it's options and met
 
 - `durationMs` (number) - Animation duration in milliseconds - Default is `100ms`.
 
-- `hasTrailLine` (bool) - Show a Polyline behind the Marker - Default is `true`.
+- `cbBeforeMove` (function) - a callback that runs every time before the marker moves a step - Default is `undefiend`.
+
+  - Arguments:
+    - newPosition: `google.maps.LatLng`
+
+- `cbAfterMove` (function) - a callback that runs every time after the marker moves a step - Default is `undefiend`.
+
+  - Arguments:
+    - currentPosition: `google.maps.LatLng`
 
 ```js
-let marker = new SmoothMarker({
+var marker = new SmoothMarker({
   durationMs: 80, // Tweak for your own use case
-  hasTrailLine: false,
+  cbAfterMove: drawMarkerPath,
   map,
   position: startPosition,
 });
+
+var trailLine = new google.maps.Polyline({
+  path: [],
+  map,
+});
+
+function drawMarkerPath(newPosition: google.maps.LatLng) {
+  trailLine.getPath().push(newPosition);
+}
 ```
